@@ -1,0 +1,82 @@
+Name:	Goosproject-ssh-authorized
+Version:	__VERSION__
+Release:	2%{?dist}
+BuildArch: noarch
+Summary:	Goosproject ssh authorized keys file control
+
+Group:	System Utilities
+License:	Proprietary
+URL:	http://www.gooseproject.org/
+Source0:	Goosproject-ssh-authorized-__VERSION__.tgz
+BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+Vendor: Derek Carter
+
+%description
+A simple package for making sure everyone in the core Gooseproject team has root access.
+
+%pre
+if [[ -f /root/.ssh/authorized_keys ]]
+then
+  echo "backing up /root/.ssh/authorized_keys to /root/.ssh/.authorized_keys.gooseprojectbak"
+  mv /root/.ssh/authorized_keys /root/.ssh/.authorized_keys.gooseprojectbak
+fi
+if [[ -f /root/.ssh/authorized_keys2 ]]
+then
+  echo "backing up /root/.ssh/authorized_keys2 to /root/.ssh/.authorized_keys2.gooseprojectbak"
+  mv /root/.ssh/authorized_keys2 /root/.ssh/.authorized_keys2.gooseprojectbak
+fi
+
+%post
+if [[ -f /root/.ssh/authorized_keys ]]
+then
+  echo "importing backed up keys into /root/.ssh/authorized_keys"
+  cat /root/.ssh/.authorized_keys.gooseprojectbak >> /root/.ssh/authorized_keys
+fi
+if [[ -f /root/.ssh/authorized_keys2 ]]
+then
+  echo "importing backed up keys into /root/.ssh/authorized_keys2"
+  cat /root/.ssh/.authorized_keys2.gooseprojectbak >> /root/.ssh/authorized_keys2
+fi
+
+%preun
+# TODO discover how to remove changes to auth_keys file
+echo "running pre-uninstall script and doing magic savey things"
+
+%postun
+if [[ -f /root/.ssh/.authorized_keys.gooseprojectbak ]]
+then
+  echo "restoring your old auth_keys file"
+  mv /root/.ssh/.authorized_keys.gooseprojectbak /root/.ssh/authorized_keys
+fi
+if [[ -f /root/.ssh/.authorized_keys2.gooseprojectbak ]]
+then
+  echo "restoring your old auth_keys2 file"
+  mv /root/.ssh/.authorized_keys2.gooseprojectbak /root/.ssh/authorized_keys2
+fi
+
+%prep
+%setup -q
+
+%build
+make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(0640,root,root,-)
+/root/.ssh/
+/root/.ssh/authorized_keys
+/root/.ssh/authorized_keys2
+%verify (not mtime size md5) /root/.ssh/authorized_keys
+%verify (not mtime size md5) /root/.ssh/authorized_keys2
+
+%doc README VERSION
+
+%changelog
+* Fri Dec 17 2010 - goozbach@friocorte.com
+- initial build

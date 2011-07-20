@@ -1,0 +1,27 @@
+This project creates a GooseProject package for installing an authorized_keys2
+
+INSTALLATION
+
+Run
+
+  make 
+
+And you'll have an .rpm deposited in packages/
+
+VERSIONING
+
+This software uses Semantic Versioning: http://semver.org/
+
+ADDING KEYS
+
+To add a key, get a copy of the user's one-line dsa or rsa ssh pubkey. Copy the key into 
+a file in src/common/ssh-keys/ where the filename follows this format: 
+
+  user@gooseproject.org_dsa
+
+Edit the file src/redhat/Gooseproject-ssh-authorized.spec.template and increment the Release number by one.
+
+Then run make.
+
+Your key will be included in the newly generated packages.
+

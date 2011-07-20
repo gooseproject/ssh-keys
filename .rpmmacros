@@ -1,0 +1,2 @@
+%_topdir  ~/projects/Gooseproject-ssh-authorized/rpmbuild
+%debug_package  %{nil}

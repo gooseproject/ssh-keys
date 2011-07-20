@@ -1,0 +1,6 @@
+# This file is part of the Gooseproject-ssh-authorized package, if you want to edit
+# this file, do so after the line #### End of package provided keys ####, as
+# well as writing your keys to the file /root/.ssh/.authorized_keys2.gooseproj.bak
+# This will ensure that your keys are kept when the package is uninstalled.
+
+#### Start of package provided keys ####
